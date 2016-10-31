@@ -7,6 +7,7 @@ var bodyParser = require('body-parser');
 var mongoose = require('mongoose');
 
 var routes = require('./routes/index');
+var places = require('./routes/places');
 
 var app = express();
 
@@ -22,6 +23,7 @@ mongoose.connect('mongodb://localhost:27017/primeshare');
 
 // Routes
 app.use('/', routes);
+app.use('/places', places);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
