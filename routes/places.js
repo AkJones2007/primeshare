@@ -2,10 +2,24 @@ var express = require('express');
 var router = express.Router();
 var Place = require('../models/place');
 var format = require('../utilities/format');
+var error = require('../utilities/error');
 var NodeGeocoder = require('node-geocoder');
 var geocoder = NodeGeocoder({
     provider: 'google',
     apiKey: 'AIzaSyD_6QyzzASNtB-2vSjs1kuvXXcIV00uLjA'
+});
+
+// Index
+router.get('/', function(req, res) {
+    Place.find({})
+        .then(function(places) {
+            res.json({ places: places });
+        })
+        .catch(function(err) {
+            res.status(500).json({
+                error: error.unknown
+            });
+        });
 });
 
 // Create
@@ -13,7 +27,9 @@ router.post('/', function(req, res) {
     if (req.body.address) {
         geocoder.geocode(req.body.address)
             .then(function(data) {
-                return Place.create(format.geocodedPlace(data[0]));
+                var place = format.geocodedPlace(data[0]);
+                place.name = req.body.name || null;
+                return Place.create(place);
             })
             .then(function(place) {
                 res.json(place);
@@ -21,7 +37,9 @@ router.post('/', function(req, res) {
     } else if (req.body.latitude && req.body.longitude) {
         geocoder.reverse({ lat: req.body.latitude, lon: req.body.longitude })
             .then(function(data) {
-                return Place.create(format.geocodedPlace(data[0]));
+                var place = format.geocodedPlace(data[0]);
+                place.name = req.body.name || null;
+                return Place.create(place);
             })
             .then(function(place) {
                 res.json(place);
