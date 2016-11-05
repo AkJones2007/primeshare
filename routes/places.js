@@ -22,6 +22,19 @@ router.get('/', function(req, res) {
         });
 });
 
+// Find By ID
+router.get('/:id', function(req, res) {
+    Place.findOne({ _id: req.params.id })
+        .then(function(place) {
+            res.json(place);
+        })
+        .catch(function() {
+            res.status(404).json({
+                error: error.notFound
+            });
+        });
+});
+
 // Create
 router.post('/', function(req, res) {
     if (req.body.address) {
