@@ -8,6 +8,16 @@ var error = {
 	notFound: {
 		message: 'Record not found.',
 		dateOccured: new Date().toISOString()
+	},
+
+	invalidParams: {
+		message: 'Invalid filter parameters.',
+		dateOccured: new Date().toISOString()
+	},
+
+	resultsNotFound: {
+		message: 'No results found.',
+		dateOccured: new Date().toISOString()
 	}
 
 };

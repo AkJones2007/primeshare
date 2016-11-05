@@ -3,6 +3,7 @@ var router = express.Router();
 var Place = require('../models/place');
 var format = require('../utilities/format');
 var error = require('../utilities/error');
+var validate = require('../utilities/validate');
 var NodeGeocoder = require('node-geocoder');
 var geocoder = NodeGeocoder({
     provider: 'google',
@@ -11,9 +12,23 @@ var geocoder = NodeGeocoder({
 
 // Index
 router.get('/', function(req, res) {
-    Place.find({})
+    var allowedParams = [ 'state', 'county', 'city', 'neighborhood', 'name' ];
+
+    if (!validate.queryParams(req.query, allowedParams)) {
+        res.status(400).json({
+            error: error.invalidParams
+        });
+    }
+
+    Place.find(req.query)
         .then(function(places) {
-            res.json({ places: places });
+            if (places.length) {
+                res.json({ places: places });
+            } else {
+                res.status(404).json({
+                    error: error.resultsNotFound
+                });
+            }
         })
         .catch(function(err) {
             res.status(500).json({
