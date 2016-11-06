@@ -1,7 +1,7 @@
 var validate = {
 
-    queryParams: function(query, allowedParams) {
-        for (var param in query) {
+    params: function(params, allowedParams) {
+        for (var param in params) {
             if (allowedParams.indexOf(param) < 0) {
                 return false
             }
