@@ -14,7 +14,7 @@ var geocoder = NodeGeocoder({
 router.get('/', function(req, res) {
     var allowedParams = [ 'state', 'county', 'city', 'neighborhood', 'name' ];
 
-    if (!validate.queryParams(req.query, allowedParams)) {
+    if (!validate.params(req.query, allowedParams)) {
         res.status(400).json({
             error: error.invalidParams
         });
@@ -79,6 +79,28 @@ router.post('/', function(req, res) {
             }
         })
     }
+});
+
+// Update
+router.patch('/:id', function(req, res) {
+    var allowedParams = ['name', 'neighborhood'];
+
+    if (!validate.params(req.body, allowedParams)) {
+        res.status(400).json({
+            error: error.invalidParams
+        });
+    }
+
+    Place.findOne({ _id: req.params.id })
+        .update(req.body, function(err, data) {
+            if (!err) {
+                res.json(data);
+            } else {
+                res.status(404).json({
+                    error: error.notFound
+                });
+            }
+        });
 });
 
 module.exports = router;
