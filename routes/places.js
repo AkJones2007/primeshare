@@ -103,4 +103,17 @@ router.patch('/:id', function(req, res) {
         });
 });
 
+// Destroy
+router.delete('/:id', function(req, res) {
+    Place.remove({ _id: req.params.id }, function(err, data) {
+        if (!err) {
+            res.json(data);
+        } else {
+            res.status(404).json({
+                error: error.notFound
+            });
+        }
+    });
+});
+
 module.exports = router;
